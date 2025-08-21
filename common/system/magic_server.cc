@@ -144,6 +144,9 @@ void MagicServer::disablePerformance()
       ninstrs / seconds / 1e3,
       ninstrs / seconds / 1e3 / Sim()->getConfig()->getApplicationCores(),
       seconds * 1e9 / (float(ninstrs ? ninstrs : 1.) / Sim()->getConfig()->getApplicationCores()));
+   printf("[SNIPER] Simulation speed %.1f KICS (%.1f KICS / target core)\n",
+      cycles / seconds / 1e3,
+      cycles / seconds / 1e3 / Sim()->getConfig()->getApplicationCores());
 
    PerformanceModel *perf = Sim()->getCoreManager()->getCoreFromID(0)->getPerformanceModel();
    if (perf->getFastforwardPerformanceModel()->getFastforwardedTime() > SubsecondTime::Zero())
