@@ -215,6 +215,18 @@ Decoder::decoder_reg RISCVDecoder::mem_base_reg (const DecodedInst * inst, unsig
   return reg;
 }
 
+bool RISCVDecoder::mem_base_upate(const DecodedInst *inst, unsigned int mem_idx)
+{
+  // riscv::decode *dec = ((RISCVDecodedInst *) ist)->get_rv8_dec();
+  return false;
+}
+
+bool RISCVDecoder::has_index_reg(const DecodedInst *inst, unsigned int mem_idx)
+{
+  // riscv::decode *dec = ((RISCVDecodedInst *) ist)->get_rv8_dec();
+  return false;
+}
+
 /// Get the index register of the memory operand pointed by mem_idx
 Decoder::decoder_reg RISCVDecoder::mem_index_reg (const DecodedInst * inst, unsigned int mem_idx) 
 {
@@ -545,8 +557,8 @@ std::string format_str(const char* fmt, ...) //rv8 src/util/util.cc
 }
 
 /// Get a string with the disassembled instruction
-void RISCVDecodedInst::disassembly_to_str(char *str, int len) const
-{ 
+std::string RISCVDecodedInst::disassembly_to_str() const
+{
   riscv::decode dec = this->rv8_dec;
   std::string args;
   const char *fmt = rv_inst_format[dec.op];
@@ -606,8 +618,9 @@ void RISCVDecodedInst::disassembly_to_str(char *str, int len) const
     fmt++;
 	}
 
-  strncpy(str, args.c_str(), len-1);
-  str[len-1] = '\0';
+  // strncpy(str, args.c_str(), len-1);
+  // str[len-1] = '\0';
+  return args;
 }
 
 /// Check if this instruction is a NOP
@@ -717,6 +730,21 @@ bool RISCVDecodedInst::is_mem_pair() const
   // instr like ldnp, ldpsw, stnp, stp in ARM
   // no load/store pair instructions in RISCV
   return false;
+}
+
+bool RISCVDecodedInst::is_indirect_branch() const
+{
+  bool res;
+  riscv::decode dec = this->rv8_dec;
+  switch (dec.op) {
+    case rv_op_jalr:
+    case rv_op_jr:
+      res = true;
+    default :
+      res = false;
+  }
+
+  return res;
 }
 
 } // namespace dl;
